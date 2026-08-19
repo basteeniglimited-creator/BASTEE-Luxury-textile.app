@@ -1,0 +1,4375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>BASTEE — Luxury Textile</title>
+
+<meta
+  name="description"
+  content="BASTEE — Premium Nigerian textiles, fabrics, fashion and accessories."
+>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root{
+  --ink:#241710;
+  --gold:#b18a45;
+  --cream:#fbf8f3;
+  --line:#eadfd5;
+  --muted:#75675f;
+  --green:#23784c;
+  --red:#9f2f2f;
+  --white:#ffffff;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  color:var(--ink);
+  background:var(--white);
+}
+
+button,
+input,
+select,
+textarea{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+img{
+  max-width:100%;
+}
+
+.wrap{
+  width:min(1180px,calc(100% - 28px));
+  margin:auto;
+}
+
+.top{
+  background:var(--ink);
+  color:#fff;
+  text-align:center;
+  padding:9px;
+  font-size:12px;
+}
+
+nav{
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:#fff;
+  border-bottom:1px solid var(--line);
+}
+
+.nav{
+  min-height:70px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.brand{
+  font:bold 24px Georgia,serif;
+}
+
+.brand small{
+  display:block;
+  font:10px Arial,sans-serif;
+  letter-spacing:2px;
+  color:var(--gold);
+}
+
+.links{
+  display:flex;
+  gap:6px;
+  margin-left:auto;
+  overflow:auto;
+}
+
+.links button,
+.icon,
+.tab,
+.cat{
+  border:1px solid var(--line);
+  background:#fff;
+  border-radius:9px;
+  padding:9px 12px;
+  white-space:nowrap;
+}
+
+.primary{
+  background:var(--ink);
+  color:#fff;
+  border:0;
+  border-radius:9px;
+  padding:11px 15px;
+  font-weight:bold;
+}
+
+.gold{
+  background:var(--gold);
+}
+
+.success{
+  background:var(--green);
+  color:#fff;
+  border:0;
+  border-radius:9px;
+  padding:9px 12px;
+}
+
+.danger{
+  background:var(--red);
+  color:#fff;
+  border:0;
+  border-radius:9px;
+  padding:9px 12px;
+}
+
+.page{
+  display:none;
+}
+
+.page.active{
+  display:block;
+}
+
+section{
+  padding:40px 0;
+}
+
+.hero{
+  background:linear-gradient(115deg,#fbf5ee,#f1e4d5);
+  padding:65px 0;
+}
+
+.tag,
+.pill{
+  color:var(--gold);
+  font-size:11px;
+  font-weight:bold;
+  text-transform:uppercase;
+}
+
+.hero h1{
+  font:700 clamp(40px,8vw,72px)/.98 Georgia,serif;
+  margin:12px 0;
+}
+
+.hero p{
+  max-width:650px;
+  color:var(--muted);
+  line-height:1.7;
+}
+
+.search{
+  display:flex;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:13px;
+  padding:5px;
+  max-width:700px;
+}
+
+.search input{
+  flex:1;
+  border:0;
+  outline:0;
+  padding:12px;
+}
+
+.head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:18px;
+}
+
+.head h2{
+  font:700 28px Georgia,serif;
+  margin:0;
+}
+
+.muted{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.cats{
+  display:flex;
+  gap:8px;
+  overflow:auto;
+  padding-bottom:6px;
+}
+
+.cat{
+  border-radius:99px;
+  padding:9px 14px;
+}
+
+.cat.active{
+  background:var(--ink);
+  color:#fff;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+}
+
+.card{
+  border:1px solid var(--line);
+  border-radius:15px;
+  overflow:hidden;
+  background:#fff;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.card:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 25px #0000000d;
+}
+
+.photo{
+  aspect-ratio:1/1.05;
+  background:linear-gradient(135deg,#eee1d5,#cbb9aa);
+  display:grid;
+  place-items:center;
+  text-align:center;
+  overflow:hidden;
+}
+
+.photo img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.ph{
+  padding:15px;
+  font:bold 15px Georgia,serif;
+  color:#6b5547;
+}
+
+.body{
+  padding:13px;
+}
+
+.card h3{
+  font:600 17px Georgia,serif;
+  margin:6px 0;
+}
+
+.price{
+  font-weight:bold;
+  margin-top:9px;
+}
+
+.steps,
+.whygrid{
+  display:grid;
+  gap:13px;
+}
+
+.step,
+.whybox,
+.admincard{
+  border:1px solid var(--line);
+  border-radius:13px;
+  padding:17px;
+}
+
+.why{
+  background:var(--cream);
+}
+
+footer{
+  background:var(--ink);
+  color:#fff;
+  padding:32px 0;
+}
+
+.footergrid{
+  display:grid;
+  gap:18px;
+}
+
+.footergrid p{
+  color:#d6c9c1;
+  font-size:13px;
+  line-height:1.7;
+}
+
+.footer-admin{
+  color:#d6c9c1;
+  background:none;
+  border:0;
+  padding:0;
+  text-decoration:underline;
+  font-size:13px;
+}
+
+.modal,
+.drawer{
+  position:fixed;
+  inset:0;
+  z-index:50;
+  display:none;
+}
+
+.modal.show,
+.drawer.show{
+  display:block;
+}
+
+.shade{
+  position:absolute;
+  inset:0;
+  background:#0008;
+}
+
+.box{
+  position:absolute;
+  background:#fff;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  width:min(620px,94vw);
+  max-height:92vh;
+  overflow:auto;
+  border-radius:17px;
+  padding:20px;
+}
+
+.drawer .box{
+  left:auto;
+  right:0;
+  top:0;
+  transform:none;
+  height:100%;
+  width:min(460px,94vw);
+  border-radius:0;
+}
+
+.close{
+  float:right;
+  border:0;
+  background:#f1e9e3;
+  border-radius:8px;
+  padding:7px 10px;
+}
+
+.field{
+  margin:12px 0;
+}
+
+.field label{
+  display:block;
+  font-size:12px;
+  font-weight:bold;
+  margin-bottom:6px;
+}
+
+.field input,
+.field select,
+.field textarea{
+  width:100%;
+  border:1px solid var(--line);
+  border-radius:9px;
+  padding:10px;
+  outline:none;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus{
+  border-color:var(--gold);
+}
+
+.field textarea{
+  min-height:90px;
+  resize:vertical;
+}
+
+.row{
+  display:flex;
+  gap:10px;
+}
+
+.row>*{
+  flex:1;
+}
+
+.cartitem{
+  display:grid;
+  grid-template-columns:55px 1fr auto;
+  gap:10px;
+  padding:11px 0;
+  border-bottom:1px solid var(--line);
+}
+
+.thumb{
+  width:55px;
+  height:55px;
+  background:#eadfd5;
+  border-radius:8px;
+  overflow:hidden;
+}
+
+.thumb img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.qty{
+  display:flex;
+  gap:7px;
+  align-items:center;
+  margin-top:7px;
+}
+
+.qty button{
+  border:1px solid var(--line);
+  background:#fff;
+  border-radius:5px;
+  width:26px;
+  height:26px;
+}
+
+.chat{
+  border:1px solid var(--line);
+  border-radius:14px;
+  overflow:hidden;
+}
+
+.messages{
+  height:280px;
+  overflow:auto;
+  padding:14px;
+  background:var(--cream);
+}
+
+.msg{
+  max-width:80%;
+  padding:9px 11px;
+  border-radius:11px;
+  margin:7px 0;
+  font-size:13px;
+}
+
+.customer{
+  background:var(--ink);
+  color:#fff;
+  margin-left:auto;
+}
+
+.support{
+  background:#fff;
+  border:1px solid var(--line);
+}
+
+.chatinput{
+  display:flex;
+  gap:7px;
+  padding:9px;
+}
+
+.chatinput input{
+  flex:1;
+  border:1px solid var(--line);
+  border-radius:9px;
+  padding:9px;
+}
+
+.notice{
+  background:#fff7df;
+  border:1px solid #ecd79a;
+  border-radius:10px;
+  padding:11px;
+  font-size:12px;
+  line-height:1.5;
+}
+
+.empty{
+  text-align:center;
+  padding:30px;
+  color:var(--muted);
+}
+
+.float{
+  position:fixed;
+  right:14px;
+  bottom:14px;
+  z-index:30;
+  background:var(--green);
+  color:#fff;
+  border:0;
+  border-radius:99px;
+  padding:12px 15px;
+  font-weight:bold;
+}
+
+.admin-header{
+  background:var(--ink);
+  color:#fff;
+  padding:17px;
+  border-radius:12px;
+  margin-bottom:15px;
+}
+
+.admin-header h2{
+  margin:0 0 5px;
+  font-family:Georgia,serif;
+}
+
+.admin-tabs,
+.admin-actions{
+  display:flex;
+  gap:8px;
+  overflow:auto;
+  margin:12px 0;
+  flex-wrap:wrap;
+}
+
+.tab.active{
+  background:var(--ink);
+  color:#fff;
+}
+
+.product-detail-image{
+  width:100%;
+  max-height:400px;
+  object-fit:cover;
+  border-radius:12px;
+  margin-bottom:15px;
+}
+
+.small{
+  font-size:11px;
+}
+
+.status{
+  display:inline-block;
+  padding:5px 8px;
+  border-radius:99px;
+  font-size:11px;
+  background:#f1e9e3;
+}
+
+@media(min-width:720px){
+
+  .grid{
+    grid-template-columns:repeat(4,1fr);
+  }
+
+  .steps,
+  .whygrid{
+    grid-template-columns:repeat(3,1fr);
+  }
+
+  .footergrid{
+    grid-template-columns:2fr 1fr 1fr 1fr;
+  }
+}
+
+@media(max-width:650px){
+
+  .nav{
+    flex-wrap:wrap;
+    padding:10px 0;
+  }
+
+  .links{
+    order:3;
+    width:100%;
+    margin-left:0;
+  }
+
+  .row{
+    flex-direction:column;
+    gap:0;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="top">
+Kano delivery • Owner-confirmed orders • BASTEE
+</div>
+
+<nav>
+<div class="wrap nav">
+
+<div class="brand">
+BASTEE
+<small>LUXURY TEXTILE • FIND YOUR FABRIC</small>
+</div>
+
+<div class="links">
+
+<button type="button" data-page="home">
+Home
+</button>
+
+<button type="button" data-page="products">
+Catalog
+</button>
+
+<button type="button" data-page="order">
+Order
+</button>
+
+<button type="button" data-page="chat">
+Chat
+</button>
+
+<button type="button" data-page="policy">
+Terms
+</button>
+
+</div>
+
+<button
+type="button"
+class="icon"
+id="cartButton"
+aria-label="Open cart"
+>
+🛍 <span id="cartCount">0</span>
+</button>
+
+</div>
+</nav>
+
+<main>
+
+<section
+id="home"
+class="page active"
+data-page-section
+>
+
+<div class="hero">
+<div class="wrap">
+
+<div class="tag">
+BASTEE — Premium Nigerian Textile & Fashion
+</div>
+
+<h1>
+Find Your Color.<br>
+Find Your Fabric.
+</h1>
+
+<p>
+Discover curated fabrics, fashion and accessories.
+Select what you love, order online and chat with BASTEE for support.
+</p>
+
+<form
+class="search"
+id="searchForm"
+>
+
+<input
+id="search"
+name="search"
+placeholder="Search fabrics, fashion & more..."
+autocomplete="off"
+>
+
+<button
+class="primary"
+type="submit"
+>
+Search
+</button>
+
+</form>
+
+<button
+type="button"
+class="primary gold"
+id="shopCatalogButton"
+style="margin-top:12px"
+>
+Shop the Catalog
+</button>
+
+</div>
+</div>
+
+<section>
+<div class="wrap">
+
+<div class="head">
+<h2>Shop Categories</h2>
+</div>
+
+<div
+class="cats"
+id="homeCats"
+></div>
+
+</div>
+</section>
+
+<section>
+<div class="wrap">
+
+<div class="head">
+
+<h2>Featured Products</h2>
+
+<span
+class="muted"
+id="productCount"
+>
+Loading...
+</span>
+
+</div>
+
+<div
+class="grid"
+id="homeProducts"
+></div>
+
+</div>
+</section>
+
+<section>
+<div class="wrap">
+
+<div class="head">
+<h2>How Ordering Works</h2>
+</div>
+
+<div class="steps">
+
+<div class="step">
+<b>1. Browse</b>
+<p class="muted">
+Find your fabric, clothing or item.
+</p>
+</div>
+
+<div class="step">
+<b>2. Select</b>
+<p class="muted">
+Open the product and add it to your cart.
+</p>
+</div>
+
+<div class="step">
+<b>3. Order</b>
+<p class="muted">
+Enter your name, phone and delivery address.
+</p>
+</div>
+
+<div class="step">
+<b>4. Confirmation</b>
+<p class="muted">
+BASTEE confirms availability and order details.
+</p>
+</div>
+
+<div class="step">
+<b>5. Delivery</b>
+<p class="muted">
+Delivery is arranged after confirmation.
+</p>
+</div>
+
+<div class="step">
+<b>6. Receive</b>
+<p class="muted">
+Your order is delivered to the agreed location.
+</p>
+</div>
+
+</div>
+</div>
+</section>
+
+<section class="why">
+<div class="wrap">
+
+<div class="head">
+<h2>Why Shop With BASTEE?</h2>
+</div>
+
+<div class="whygrid">
+
+<div class="whybox">
+<b>Curated Products</b>
+<p class="muted">
+Selected fabrics and fashion items.
+</p>
+</div>
+
+<div class="whybox">
+<b>Order Confirmation</b>
+<p class="muted">
+Availability is confirmed before finalizing.
+</p>
+</div>
+
+<div class="whybox">
+<b>Kano Delivery</b>
+<p class="muted">
+Delivery is coordinated after confirmation.
+</p>
+</div>
+
+</div>
+</div>
+</section>
+
+</section>
+
+
+<section
+id="products"
+class="page"
+data-page-section
+>
+
+<div class="wrap">
+
+<section>
+
+<div class="head">
+<h2>Catalog</h2>
+</div>
+
+<div
+class="cats"
+id="catalogCats"
+></div>
+
+<div
+class="grid"
+id="catalogProducts"
+style="margin-top:18px"
+></div>
+
+</section>
+
+</div>
+
+</section>
+
+
+<section
+id="order"
+class="page"
+data-page-section
+>
+
+<div class="wrap">
+
+<section>
+
+<div class="head">
+<h2>Place Your Order</h2>
+</div>
+
+<p class="muted">
+Complete your details and submit your order for confirmation.
+</p>
+
+<div id="orderSummary"></div>
+
+<div class="field">
+
+<label for="customerName">
+Full Name
+</label>
+
+<input
+id="customerName"
+autocomplete="name"
+>
+
+</div>
+
+<div class="row">
+
+<div class="field">
+
+<label for="customerPhone">
+Phone
+</label>
+
+<input
+id="customerPhone"
+inputmode="tel"
+autocomplete="tel"
+>
+
+</div>
+
+<div class="field">
+
+<label for="customerLocation">
+Location
+</label>
+
+<select id="customerLocation">
+
+<option>Kano</option>
+
+<option>
+Other location — confirm with us
+</option>
+
+</select>
+
+</div>
+
+</div>
+
+<div class="field">
+
+<label for="customerAddress">
+Delivery Address
+</label>
+
+<textarea
+id="customerAddress"
+placeholder="House, street and landmark"
+></textarea>
+
+</div>
+
+<div class="field">
+
+<label for="customerNote">
+Order Note
+</label>
+
+<textarea
+id="customerNote"
+placeholder="Color preference, delivery time, etc."
+></textarea>
+
+</div>
+
+<button
+type="button"
+class="primary"
+id="submitOrderButton"
+>
+Submit Order
+</button>
+
+</section>
+
+</div>
+
+</section>
+
+
+<section
+id="chat"
+class="page"
+data-page-section
+>
+
+<div class="wrap">
+
+<section>
+
+<div class="head">
+<h2>Customer Chat</h2>
+</div>
+
+<p class="muted">
+Send a message here. It will open WhatsApp so BASTEE can receive it.
+</p>
+
+<div class="chat">
+
+<div
+class="messages"
+id="messages"
+>
+
+<div class="msg support">
+BASTEE Support: Hello! How can we help you today?
+</div>
+
+</div>
+
+<form
+class="chatinput"
+id="chatForm"
+>
+
+<input
+id="chatInput"
+placeholder="Type your message..."
+autocomplete="off"
+>
+
+<button
+class="primary"
+type="submit"
+>
+Send
+</button>
+
+</form>
+
+</div>
+
+<button
+type="button"
+class="primary gold"
+id="whatsappChatButton"
+style="margin-top:12px"
+>
+Chat on WhatsApp
+</button>
+
+</section>
+
+</div>
+
+</section>
+
+
+<section
+id="policy"
+class="page"
+data-page-section
+>
+
+<div class="wrap">
+
+<section>
+
+<h2>
+Terms & Business Policy
+</h2>
+
+<p>
+Orders are requests until BASTEE confirms availability and delivery details.
+</p>
+
+<h3>
+Delivery
+</h3>
+
+<p>
+Delivery time and charges depend on location and order details.
+</p>
+
+<h3>
+Support
+</h3>
+
+<p>
+Phone: 09164176527<br>
+Email: basteeniglimited@gmail.com
+</p>
+
+</section>
+
+</div>
+
+</section>
+
+</main>
+
+
+<footer>
+
+<div class="wrap footergrid">
+
+<div>
+
+<div class="brand">
+BASTEE
+</div>
+
+<p>
+Find Your Color. Find Your Fabric.<br>
+Premium textiles and fashion.
+</p>
+
+</div>
+
+<div>
+
+<b>
+Quick Links
+</b>
+
+<p>
+
+<button
+type="button"
+class="footer-admin"
+data-page="home"
+>
+Home
+</button>
+
+<br>
+
+<button
+type="button"
+class="footer-admin"
+data-page="products"
+>
+Catalog
+</button>
+
+<br>
+
+<button
+type="button"
+class="footer-admin"
+data-page="order"
+>
+Order
+</button>
+
+<br>
+
+<button
+type="button"
+class="footer-admin"
+data-page="chat"
+>
+Chat
+</button>
+
+</p>
+
+</div>
+
+<div>
+
+<b>
+Contact
+</b>
+
+<p>
+09164176527<br>
+basteeniglimited@gmail.com<br>
+Kano, Nigeria
+</p>
+
+</div>
+
+<div>
+
+<b>
+Management
+</b>
+
+<p>
+
+<button
+type="button"
+class="footer-admin"
+id="adminButton"
+>
+Admin
+</button>
+
+</p>
+
+</div>
+
+</div>
+
+</footer>
+
+
+<button
+type="button"
+class="float"
+id="floatingWhatsApp"
+>
+WhatsApp Support
+</button>
+
+
+<!-- CART -->
+
+<div
+class="drawer"
+id="cartDrawer"
+aria-hidden="true"
+>
+
+<div
+class="shade"
+data-close="cartDrawer"
+></div>
+
+<div class="box">
+
+<button
+type="button"
+class="close"
+data-close="cartDrawer"
+>
+✕
+</button>
+
+<h2>
+Your Cart
+</h2>
+
+<div id="cartItems"></div>
+
+<div id="cartTotal"></div>
+
+<button
+type="button"
+class="primary"
+id="continueOrderButton"
+style="width:100%"
+>
+Continue to Order
+</button>
+
+</div>
+
+</div>
+
+
+<!-- PRODUCT -->
+
+<div
+class="modal"
+id="productModal"
+aria-hidden="true"
+>
+
+<div
+class="shade"
+data-close="productModal"
+></div>
+
+<div class="box">
+
+<button
+type="button"
+class="close"
+data-close="productModal"
+>
+✕
+</button>
+
+<div id="productDetail"></div>
+
+</div>
+
+</div>
+
+
+<!-- ADMIN LOGIN -->
+
+<div
+class="modal"
+id="adminLogin"
+aria-hidden="true"
+>
+
+<div
+class="shade"
+data-close="adminLogin"
+></div>
+
+<div class="box">
+
+<button
+type="button"
+class="close"
+data-close="adminLogin"
+>
+✕
+</button>
+
+<div class="admin-header">
+
+<h2>
+BASTEE Admin
+</h2>
+
+<div class="small">
+Private management dashboard
+</div>
+
+</div>
+
+<p class="muted">
+Enter your administrator passcode.
+</p>
+
+<form id="adminLoginForm">
+
+<div class="field">
+
+<label for="adminPin">
+Admin Passcode
+</label>
+
+<input
+id="adminPin"
+type="password"
+autocomplete="current-password"
+>
+
+</div>
+
+<button
+type="submit"
+class="primary"
+>
+Enter Dashboard
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+
+<!-- ADMIN DASHBOARD -->
+
+<div
+class="modal"
+id="adminModal"
+aria-hidden="true"
+>
+
+<div class="shade"></div>
+
+<div class="box">
+
+<button
+type="button"
+class="close"
+id="closeAdminButton"
+>
+✕
+</button>
+
+<div id="adminContent"></div>
+
+</div>
+
+</div>
+
+
+<script>
+/*
+  ============================================================
+  BASTEE JAVASCRIPT
+  ============================================================
+
+  IMPORTANT:
+
+  The HTML above is the website structure.
+  JavaScript does NOT create the website layout.
+
+  JavaScript is only responsible for:
+  - button actions
+  - navigation
+  - cart
+  - product loading
+  - orders
+  - WhatsApp
+  - Supabase communication
+  - admin actions
+
+  No inline onclick attributes are used.
+  ============================================================
+*/
+
+
+/* =========================
+   SUPABASE
+========================= */
+
+const SUPABASE_URL =
+  "https://wbxuykcghnvogtyqkwhs.supabase.co";
+
+const SUPABASE_ANON_KEY =
+  "sb_publishable_qtNlkObLRslvt3lMGqMhEA_DmkQoK8C";
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+
+
+/* =========================
+   BUSINESS SETTINGS
+========================= */
+
+const WHATSAPP_NUMBER =
+  "2349164176527";
+
+const categories = [
+  "All",
+  "Fabrics & Textiles",
+  "Holland Wax",
+  "UE Wax",
+  "Fantastic Holland",
+  "Ready-Made Clothing",
+  "Men's Fashion",
+  "Women's Fashion",
+  "Children's Fashion",
+  "Bags",
+  "Shoes",
+  "Accessories",
+  "Other Items"
+];
+
+
+/* =========================
+   APPLICATION STATE
+========================= */
+
+let products = [];
+let cart = [];
+let selectedCategory = "All";
+let adminUnlocked = false;
+
+
+/* =========================
+   SAFE HTML
+========================= */
+
+function escapeHTML(value){
+
+  return String(value ?? "").replace(
+    /[&<>"']/g,
+    character => ({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#039;"
+    }[character])
+  );
+
+}
+
+
+/* =========================
+   PRICE
+========================= */
+
+function money(value){
+
+  if(
+    value === null ||
+    value === undefined ||
+    value === ""
+  ){
+
+    return "Price on request";
+
+  }
+
+  return (
+    "₦" +
+    Number(value).toLocaleString("en-NG")
+  );
+
+}
+
+
+/* =========================
+   CART STORAGE
+========================= */
+
+function loadCart(){
+
+  try{
+
+    const stored =
+      localStorage.getItem("bastee_cart");
+
+    if(!stored){
+      return [];
+    }
+
+    const parsed =
+      JSON.parse(stored);
+
+    return Array.isArray(parsed)
+      ? parsed
+      : [];
+
+  }catch(error){
+
+    console.error(error);
+
+    return [];
+
+  }
+
+}
+
+
+function saveCart(){
+
+  localStorage.setItem(
+    "bastee_cart",
+    JSON.stringify(cart)
+  );
+
+}
+
+
+/* =========================
+   PAGE NAVIGATION
+========================= */
+
+function showPage(pageId){
+
+  document
+    .querySelectorAll("[data-page-section]")
+    .forEach(page => {
+
+      page.classList.remove("active");
+
+    });
+
+  const page =
+    document.getElementById(pageId);
+
+  if(page){
+
+    page.classList.add("active");
+
+  }
+
+  if(pageId === "order"){
+
+    renderOrder();
+
+  }
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+}
+
+
+/* =========================
+   MODALS
+========================= */
+
+function openModal(id){
+
+  const element =
+    document.getElementById(id);
+
+  if(!element){
+    return;
+  }
+
+  element.classList.add("show");
+
+  element.setAttribute(
+    "aria-hidden",
+    "false"
+  );
+
+}
+
+
+function closeModal(id){
+
+  const element =
+    document.getElementById(id);
+
+  if(!element){
+    return;
+  }
+
+  element.classList.remove("show");
+
+  element.setAttribute(
+    "aria-hidden",
+    "true"
+  );
+
+}
+
+
+/* =========================
+   CATEGORIES
+========================= */
+
+function categoryHTML(){
+
+  return categories.map(category => {
+
+    const active =
+      category === selectedCategory
+        ? "active"
+        : "";
+
+    return `
+      <button
+        type="button"
+        class="cat ${active}"
+        data-category="${escapeHTML(category)}"
+      >
+        ${escapeHTML(category)}
+      </button>
+    `;
+
+  }).join("");
+
+}
+
+
+function renderCategories(){
+
+  const home =
+    document.getElementById("homeCats");
+
+  const catalog =
+    document.getElementById("catalogCats");
+
+  if(home){
+    home.innerHTML = categoryHTML();
+  }
+
+  if(catalog){
+    catalog.innerHTML = categoryHTML();
+  }
+
+}
+
+
+/* =========================
+   CATEGORY CLICK
+========================= */
+
+function handleCategoryClick(event){
+
+  const button =
+    event.target.closest("[data-category]");
+
+  if(!button){
+    return;
+  }
+
+  selectedCategory =
+    button.dataset.category;
+
+  render();
+
+}
+
+
+/* =========================
+   FILTER
+========================= */
+
+function filteredProducts(){
+
+  const searchElement =
+    document.getElementById("search");
+
+  const query =
+    (
+      searchElement?.value || ""
+    )
+    .toLowerCase()
+    .trim();
+
+  return products.filter(product => {
+
+    const colors =
+      Array.isArray(product.colors)
+        ? product.colors.join(" ")
+        : "";
+
+    const categoryMatch =
+      selectedCategory === "All" ||
+      product.category === selectedCategory ||
+      product.fabric === selectedCategory;
+
+    const searchableText =
+      `
+      ${product.name}
+      ${product.brand}
+      ${product.fabric}
+      ${colors}
+      `
+      .toLowerCase();
+
+    return (
+      categoryMatch &&
+      (
+        !query ||
+        searchableText.includes(query)
+      )
+    );
+
+  });
+
+}
+
+
+/* =========================
+   PRODUCT NORMALIZATION
+========================= */
+
+function normalizeProduct(row){
+
+  return {
+
+    id:Number(row.id),
+
+    name:row.name || "",
+
+    brand:row.brand || "BASTEE",
+
+    fabric:row.fabric || "",
+
+    colors:
+      Array.isArray(row.colors)
+        ? row.colors
+        : [],
+
+    category:
+      row.category || "Other Items",
+
+    price:
+      row.price ?? null,
+
+    qty:
+      row.qty ?? null,
+
+    inStock:
+      row.in_stock !== false,
+
+    photos:
+      Array.isArray(row.photos)
+        ? row.photos
+        : []
+
+  };
+
+}
+
+
+/* =========================
+   PRODUCT CARD
+========================= */
+
+function productCard(product){
+
+  const firstPhoto =
+    product.photos?.[0];
+
+  let imageHTML = "";
+
+  if(firstPhoto){
+
+    imageHTML = `
+      <div class="photo">
+        <img
+          src="${escapeHTML(firstPhoto)}"
+          alt="${escapeHTML(product.name)}"
+          loading="lazy"
+        >
+      </div>
+    `;
+
+  }else{
+
+    imageHTML = `
+      <div class="photo">
+        <div class="ph">
+
+          ${escapeHTML(product.brand)}
+
+          <br>
+
+          <small>
+            ${escapeHTML(
+              (product.colors || []).join(" • ")
+            )}
+          </small>
+
+        </div>
+      </div>
+    `;
+
+  }
+
+  return `
+
+    <article
+      class="card"
+      data-product-id="${Number(product.id)}"
+      tabindex="0"
+      role="button"
+      aria-label="View ${escapeHTML(product.name)}"
+    >
+
+      ${imageHTML}
+
+      <div class="body">
+
+        <div class="pill">
+          ${escapeHTML(product.category)}
+        </div>
+
+        <h3>
+          ${escapeHTML(product.name)}
+        </h3>
+
+        <div class="muted">
+          ${escapeHTML(product.brand)}
+          •
+          ${escapeHTML(product.fabric)}
+        </div>
+
+        <div class="price">
+          ${money(product.price)}
+        </div>
+
+        <div class="muted">
+          ${
+            product.inStock === false
+              ? "Out of stock"
+              : "Availability confirmed after order"
+          }
+        </div>
+
+      </div>
+
+    </article>
+
+  `;
+
+}
+
+
+/* =========================
+   RENDER PRODUCTS
+========================= */
+
+function render(){
+
+  renderCategories();
+
+  const list =
+    filteredProducts();
+
+  const html =
+    list.length
+      ? list.map(productCard).join("")
+      : `
+        <div class="empty">
+          No products found.
+        </div>
+      `;
+
+  const homeProducts =
+    document.getElementById("homeProducts");
+
+  const catalogProducts =
+    document.getElementById("catalogProducts");
+
+  if(homeProducts){
+    homeProducts.innerHTML = html;
+  }
+
+  if(catalogProducts){
+    catalogProducts.innerHTML = html;
+  }
+
+  const count =
+    document.getElementById("productCount");
+
+  if(count){
+
+    count.textContent =
+      `${list.length} items`;
+
+  }
+
+}
+
+
+/* =========================
+   LOAD PRODUCTS
+========================= */
+
+async function loadProducts(){
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("products")
+      .select("*")
+      .order(
+        "created_at",
+        {
+          ascending:true
+        }
+      );
+
+  if(error){
+
+    console.error(
+      "Supabase products error:",
+      error
+    );
+
+    products = [];
+
+    render();
+
+    return;
+
+  }
+
+  products =
+    (data || []).map(
+      normalizeProduct
+    );
+
+  render();
+
+}
+
+
+/* =========================
+   PRODUCT DETAIL
+========================= */
+
+function openProduct(productId){
+
+  const product =
+    products.find(
+      item =>
+        Number(item.id) ===
+        Number(productId)
+    );
+
+  if(!product){
+    return;
+  }
+
+  let imageHTML = "";
+
+  if(product.photos?.[0]){
+
+    imageHTML = `
+      <img
+        class="product-detail-image"
+        src="${escapeHTML(product.photos[0])}"
+        alt="${escapeHTML(product.name)}"
+      >
+    `;
+
+  }else{
+
+    imageHTML = `
+      <div
+        class="photo"
+        style="margin-bottom:15px"
+      >
+        <div class="ph">
+          ${escapeHTML(product.brand)}
+          <br>
+          ${escapeHTML(
+            (product.colors || []).join(" • ")
+          )}
+        </div>
+      </div>
+    `;
+
+  }
+
+  document.getElementById(
+    "productDetail"
+  ).innerHTML = `
+
+    ${imageHTML}
+
+    <div class="pill">
+      ${escapeHTML(product.category)}
+    </div>
+
+    <h2>
+      ${escapeHTML(product.name)}
+    </h2>
+
+    <p class="muted">
+      ${escapeHTML(product.brand)}
+      •
+      ${escapeHTML(product.fabric)}
+    </p>
+
+    <h3>
+      ${money(product.price)}
+    </h3>
+
+    <p>
+      <b>Colors:</b>
+      ${escapeHTML(
+        (product.colors || []).join(", ")
+      )}
+    </p>
+
+    <p>
+      <b>Quantity:</b>
+      ${escapeHTML(
+        product.qty || "To be confirmed"
+      )}
+    </p>
+
+    <div class="notice">
+      Availability and final price will be confirmed
+      by BASTEE before the order is finalized.
+    </div>
+
+    <div class="admin-actions">
+
+      <button
+        type="button"
+        class="primary"
+        data-action="add-cart"
+        data-id="${Number(product.id)}"
+      >
+        Add to Cart
+      </button>
+
+      <button
+        type="button"
+        class="success"
+        data-action="order-now"
+        data-id="${Number(product.id)}"
+      >
+        Order Now
+      </button>
+
+      <button
+        type="button"
+        class="tab"
+        data-action="product-whatsapp"
+        data-name="${escapeHTML(product.name)}"
+      >
+        Chat for Support
+      </button>
+
+    </div>
+
+  `;
+
+  openModal("productModal");
+
+}
+
+
+/* =========================
+   CART
+========================= */
+
+function updateCartCount(){
+
+  const count =
+    cart.reduce(
+      (total,item) =>
+        total + Number(item.n || 0),
+      0
+    );
+
+  const element =
+    document.getElementById("cartCount");
+
+  if(element){
+    element.textContent = count;
+  }
+
+}
+
+
+function addToCart(productId){
+
+  const existing =
+    cart.find(
+      item =>
+        Number(item.id) ===
+        Number(productId)
+    );
+
+  if(existing){
+
+    existing.n += 1;
+
+  }else{
+
+    cart.push({
+      id:Number(productId),
+      n:1
+    });
+
+  }
+
+  saveCart();
+
+  updateCartCount();
+
+  renderCart();
+
+}
+
+
+function changeQuantity(
+  productId,
+  difference
+){
+
+  const item =
+    cart.find(
+      entry =>
+        Number(entry.id) ===
+        Number(productId)
+    );
+
+  if(!item){
+    return;
+  }
+
+  item.n += difference;
+
+  if(item.n < 1){
+
+    cart =
+      cart.filter(
+        entry =>
+          Number(entry.id) !==
+          Number(productId)
+      );
+
+  }
+
+  saveCart();
+
+  updateCartCount();
+
+  renderCart();
+
+}
+
+
+function removeFromCart(productId){
+
+  cart =
+    cart.filter(
+      item =>
+        Number(item.id) !==
+        Number(productId)
+    );
+
+  saveCart();
+
+  updateCartCount();
+
+  renderCart();
+
+}
+
+
+/* =========================
+   CART RENDER
+========================= */
+
+function renderCart(){
+
+  const container =
+    document.getElementById("cartItems");
+
+  const total =
+    document.getElementById("cartTotal");
+
+  if(!container || !total){
+    return;
+  }
+
+  if(!cart.length){
+
+    container.innerHTML = `
+      <div class="empty">
+        Your cart is empty.
+      </div>
+    `;
+
+    total.innerHTML = "";
+
+    return;
+
+  }
+
+  container.innerHTML =
+    cart.map(item => {
+
+      const product =
+        products.find(
+          p =>
+            Number(p.id) ===
+            Number(item.id)
+        );
+
+      return `
+
+        <div class="cartitem">
+
+          <div class="thumb">
+
+            ${
+              product?.photos?.[0]
+                ? `
+                  <img
+                    src="${escapeHTML(product.photos[0])}"
+                    alt=""
+                  >
+                `
+                : ""
+            }
+
+          </div>
+
+          <div>
+
+            <b>
+              ${escapeHTML(
+                product?.name ||
+                "Product"
+              )}
+            </b>
+
+            <div class="muted">
+              ${money(product?.price)}
+            </div>
+
+            <div class="qty">
+
+              <button
+                type="button"
+                data-cart-minus="${Number(item.id)}"
+              >
+                −
+              </button>
+
+              <span>
+                ${Number(item.n)}
+              </span>
+
+              <button
+                type="button"
+                data-cart-plus="${Number(item.id)}"
+              >
+                +
+              </button>
+
+            </div>
+
+          </div>
+
+          <button
+            type="button"
+            class="close"
+            data-cart-remove="${Number(item.id)}"
+          >
+            ✕
+          </button>
+
+        </div>
+
+      `;
+
+    }).join("");
+
+  total.innerHTML = `
+    <p>
+      <b>Total:</b>
+      confirmed after availability.
+    </p>
+  `;
+
+}
+
+
+/* =========================
+   ORDER SUMMARY
+========================= */
+
+function renderOrder(){
+
+  const box =
+    document.getElementById(
+      "orderSummary"
+    );
+
+  if(!box){
+    return;
+  }
+
+  if(!cart.length){
+
+    box.innerHTML = `
+      <div class="empty">
+        Your order is empty.<br>
+        Browse the catalog to select products.
+      </div>
+    `;
+
+    return;
+
+  }
+
+  box.innerHTML =
+    cart.map(item => {
+
+      const product =
+        products.find(
+          p =>
+            Number(p.id) ===
+            Number(item.id)
+        );
+
+      return `
+
+        <div class="admincard">
+
+          <b>
+            ${escapeHTML(
+              product?.name ||
+              "Product"
+            )}
+          </b>
+
+          <div class="muted">
+            Quantity:
+            ${Number(item.n)}
+            •
+            ${money(product?.price)}
+          </div>
+
+        </div>
+
+      `;
+
+    }).join("");
+
+}
+
+
+/* =========================
+   WHATSAPP
+========================= */
+
+function openWhatsApp(message){
+
+  const text =
+    message ||
+    "Hello BASTEE, I need support with a product/order.";
+
+  const url =
+    "https://wa.me/" +
+    WHATSAPP_NUMBER +
+    "?text=" +
+    encodeURIComponent(text);
+
+  window.open(
+    url,
+    "_blank",
+    "noopener,noreferrer"
+  );
+
+}
+
+
+/* =========================
+   SUBMIT ORDER
+========================= */
+
+async function submitOrder(){
+
+  if(!cart.length){
+
+    alert(
+      "Your order is empty."
+    );
+
+    return;
+
+  }
+
+  const name =
+    document
+      .getElementById("customerName")
+      .value
+      .trim();
+
+  const phone =
+    document
+      .getElementById("customerPhone")
+      .value
+      .trim();
+
+  const location =
+    document
+      .getElementById("customerLocation")
+      .value;
+
+  const address =
+    document
+      .getElementById("customerAddress")
+      .value
+      .trim();
+
+  const note =
+    document
+      .getElementById("customerNote")
+      .value
+      .trim();
+
+  if(
+    !name ||
+    !phone ||
+    !address
+  ){
+
+    alert(
+      "Please enter your name, phone and address."
+    );
+
+    return;
+
+  }
+
+  const orderId =
+    "BASTEE-" +
+    Date.now();
+
+  const order = {
+
+    id:orderId,
+
+    date:
+      new Date()
+        .toLocaleString("en-NG"),
+
+    name,
+
+    phone,
+
+    location,
+
+    address,
+
+    note,
+
+    items:
+      cart.map(item => ({
+        id:Number(item.id),
+        n:Number(item.n)
+      })),
+
+    status:"New"
+
+  };
+
+  const {
+    error
+  } =
+    await supabaseClient
+      .from("orders")
+      .insert({
+
+        id:order.id,
+
+        date:order.date,
+
+        name:order.name,
+
+        phone:order.phone,
+
+        location:order.location,
+
+        address:order.address,
+
+        note:order.note,
+
+        items:order.items,
+
+        status:order.status
+
+      });
+
+  if(error){
+
+    console.error(error);
+
+    alert(
+      "The order could not be saved. Please try again."
+    );
+
+    return;
+
+  }
+
+  const itemLines =
+    cart.map(item => {
+
+      const product =
+        products.find(
+          p =>
+            Number(p.id) ===
+            Number(item.id)
+        );
+
+      return (
+        `${item.n} x ` +
+        `${product?.name || "Product"}`
+      );
+
+    }).join("\n");
+
+  const message =
+`Hello BASTEE, I placed an order.
+
+Order: ${orderId}
+Name: ${name}
+Phone: ${phone}
+Location: ${location}
+Address: ${address}
+
+Items:
+${itemLines}
+${note ? "Note: " + note : ""}`;
+
+  cart = [];
+
+  saveCart();
+
+  updateCartCount();
+
+  renderOrder();
+
+  alert(
+    "Order saved successfully."
+  );
+
+  openWhatsApp(message);
+
+  showPage("home");
+
+}
+
+
+/* =========================
+   ADMIN
+========================= */
+
+async function getAdminPin(){
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("settings")
+      .select("admin_pin")
+      .eq("id",1)
+      .maybeSingle();
+
+  if(error){
+
+    console.error(error);
+
+    return "2468";
+
+  }
+
+  return data?.admin_pin || "2468";
+
+}
+
+
+async function saveAdminPin(pin){
+
+  const {
+    error
+  } =
+    await supabaseClient
+      .from("settings")
+      .upsert(
+        {
+          id:1,
+          admin_pin:pin,
+          updated_at:
+            new Date().toISOString()
+        },
+        {
+          onConflict:"id"
+        }
+      );
+
+  if(error){
+
+    console.error(error);
+
+    return false;
+
+  }
+
+  return true;
+
+}
+
+
+/* =========================
+   ADMIN LOGIN
+========================= */
+
+async function loginAdmin(){
+
+  const pin =
+    document
+      .getElementById("adminPin")
+      .value;
+
+  const stored =
+    await getAdminPin();
+
+  if(pin !== stored){
+
+    alert(
+      "Incorrect admin passcode."
+    );
+
+    return;
+
+  }
+
+  adminUnlocked = true;
+
+  closeModal("adminLogin");
+
+  openModal("adminModal");
+
+  await renderAdminProducts();
+
+}
+
+
+/* =========================
+   ADMIN NAV
+========================= */
+
+function adminNavigation(){
+
+  return `
+
+    <div class="admin-tabs">
+
+      <button
+        type="button"
+        class="tab active"
+        data-admin-tab="products"
+      >
+        Products
+      </button>
+
+      <button
+        type="button"
+        class="tab"
+        data-admin-tab="orders"
+      >
+        Orders
+      </button>
+
+      <button
+        type="button"
+        class="tab"
+        data-admin-tab="settings"
+      >
+        Settings
+      </button>
+
+    </div>
+
+  `;
+
+}
+
+
+/* =========================
+   ADMIN PRODUCTS
+========================= */
+
+async function renderAdminProducts(){
+
+  if(!adminUnlocked){
+    return;
+  }
+
+  const content =
+    document.getElementById(
+      "adminContent"
+    );
+
+  content.innerHTML = `
+
+    <div class="admin-header">
+
+      <h2>
+        BASTEE Admin Dashboard
+      </h2>
+
+      <div class="small">
+        Manage products and orders with Supabase
+      </div>
+
+    </div>
+
+    ${adminNavigation()}
+
+    <div class="admin-actions">
+
+      <button
+        type="button"
+        class="success"
+        data-admin-action="new-product"
+      >
+        + Add Product
+      </button>
+
+    </div>
+
+    ${
+      products.length
+        ? products.map(product => `
+
+          <div class="admincard">
+
+            <b>
+              ${escapeHTML(product.name)}
+            </b>
+
+            <div class="muted">
+
+              ${escapeHTML(product.category)}
+              •
+              ${money(product.price)}
+              •
+
+              ${
+                product.inStock === false
+                  ? "Out of stock"
+                  : "Available"
+              }
+
+            </div>
+
+            <div class="admin-actions">
+
+              <button
+                type="button"
+                class="tab"
+                data-edit-product="${Number(product.id)}"
+              >
+                Edit
+              </button>
+
+              <button
+                type="button"
+                class="danger"
+                data-delete-product="${Number(product.id)}"
+              >
+                Delete
+              </button>
+
+            </div>
+
+          </div>
+
+        `).join("")
+        : `
+          <div class="empty">
+            No products yet.
+          </div>
+        `
+    }
+
+  `;
+
+}
+
+
+/* =========================
+   ADMIN PRODUCT FORM
+========================= */
+
+function renderProductForm(product){
+
+  const content =
+    document.getElementById(
+      "adminContent"
+    );
+
+  const isEditing =
+    Boolean(product);
+
+  const current =
+    product || {
+
+      id:Date.now(),
+      name:"",
+      brand:"BASTEE",
+      fabric:"",
+      category:"Fabrics & Textiles",
+      colors:[],
+      price:null,
+      qty:null,
+      inStock:true,
+      photos:[]
+
+    };
+
+  content.innerHTML = `
+
+    <div class="admin-header">
+
+      <h2>
+        ${
+          isEditing
+            ? "Edit Product"
+            : "Add Product"
+        }
+      </h2>
+
+    </div>
+
+    <div class="field">
+
+      <label>
+        Product Name
+      </label>
+
+      <input
+        id="pName"
+        value="${escapeHTML(current.name)}"
+      >
+
+    </div>
+
+    <div class="field">
+
+      <label>
+        Brand
+      </label>
+
+      <input
+        id="pBrand"
+        value="${escapeHTML(current.brand)}"
+      >
+
+    </div>
+
+    <div class="field">
+
+      <label>
+        Fabric Type
+      </label>
+
+      <input
+        id="pFabric"
+        value="${escapeHTML(current.fabric)}"
+      >
+
+    </div>
+
+    <div class="field">
+
+      <label>
+        Category
+      </label>
+
+      <select id="pCategory">
+
+        ${
+          categories
+            .filter(
+              category =>
+                category !== "All"
+            )
+            .map(category => `
+
+              <option
+                value="${escapeHTML(category)}"
+                ${
+                  category === current.category
+                    ? "selected"
+                    : ""
+                }
+              >
+                ${escapeHTML(category)}
+              </option>
+
+            `)
+            .join("")
+        }
+
+      </select>
+
+    </div>
+
+    <div class="field">
+
+      <label>
+        Colors — separate by commas
+      </label>
+
+      <input
+        id="pColors"
+        value="${escapeHTML(
+          (current.colors || []).join(", ")
+        )}"
+      >
+
+    </div>
+
+    <div class="field">
+
+      <label>
+        Price ₦
+      </label>
+
+      <input
+        id="pPrice"
+        type="number"
+        min="0"
+        value="${current.price ?? ""}"
+      >
+
+    </div>
+
+    <div class="field">
+
+      <label>
+        Quantity / Yards
+      </label>
+
+      <input
+        id="pQty"
+        value="${escapeHTML(
+          current.qty ?? ""
+        )}"
+      >
+
+    </div>
+
+    <div class="field">
+
+      <label>
+        Stock
+      </label>
+
+      <select id="pStock">
+
+        <option
+          value="true"
+          ${
+            current.inStock !== false
+              ? "selected"
+              : ""
+          }
+        >
+          Available / Confirm
+        </option>
+
+        <option
+          value="false"
+          ${
+            current.inStock === false
+              ? "selected"
+              : ""
+          }
+        >
+          Out of Stock
+        </option>
+
+      </select>
+
+    </div>
+
+    <div class="field">
+
+      <label>
+        Product Image URL
+      </label>
+
+      <input
+        id="pPhoto"
+        placeholder="https://example.com/image.jpg"
+      >
+
+    </div>
+
+    <div class="field">
+
+      <label>
+        Existing Image URLs — one per line
+      </label>
+
+      <textarea id="pPhotos">${escapeHTML(
+        (current.photos || []).join("\n")
+      )}</textarea>
+
+    </div>
+
+    <div class="admin-actions">
+
+      <button
+        type="button"
+        class="success"
+        id="saveProductButton"
+        data-product-save-id="${
+          isEditing
+            ? Number(current.id)
+            : ""
+        }"
+      >
+        Save Product
+      </button>
+
+      <button
+        type="button"
+        class="tab"
+        data-admin-action="products"
+      >
+        Cancel
+      </button>
+
+    </div>
+
+  `;
+
+}
+
+
+/* =========================
+   SAVE PRODUCT
+========================= */
+
+async function saveProduct(productId){
+
+  const name =
+    document
+      .getElementById("pName")
+      .value
+      .trim();
+
+  if(!name){
+
+    alert(
+      "Please enter a product name."
+    );
+
+    return;
+
+  }
+
+  const brand =
+    document
+      .getElementById("pBrand")
+      .value
+      .trim() ||
+    "BASTEE";
+
+  const fabric =
+    document
+      .getElementById("pFabric")
+      .value
+      .trim();
+
+  const category =
+    document
+      .getElementById("pCategory")
+      .value;
+
+  const colors =
+    document
+      .getElementById("pColors")
+      .value
+      .split(",")
+      .map(value => value.trim())
+      .filter(Boolean);
+
+  const priceValue =
+    document
+      .getElementById("pPrice")
+      .value;
+
+  const price =
+    priceValue
+      ? Number(priceValue)
+      : null;
+
+  const qty =
+    document
+      .getElementById("pQty")
+      .value
+      .trim() ||
+    null;
+
+  const inStock =
+    document
+      .getElementById("pStock")
+      .value === "true";
+
+  let photos =
+    document
+      .getElementById("pPhotos")
+      .value
+      .split("\n")
+      .map(value => value.trim())
+      .filter(Boolean);
+
+  const newPhoto =
+    document
+      .getElementById("pPhoto")
+      .value
+      .trim();
+
+  if(newPhoto){
+
+    photos.unshift(newPhoto);
+
+  }
+
+  photos =
+    [...new Set(photos)];
+
+  const id =
+    productId
+      ? Number(productId)
+      : Date.now();
+
+  const {
+    error
+  } =
+    await supabaseClient
+      .from("products")
+      .upsert(
+        {
+          id,
+          name,
+          brand,
+          fabric,
+          colors,
+          category,
+          price,
+          qty,
+          in_stock:inStock,
+          photos
+        },
+        {
+          onConflict:"id"
+        }
+      );
+
+  if(error){
+
+    console.error(error);
+
+    alert(
+      "Product could not be saved."
+    );
+
+    return;
+
+  }
+
+  await loadProducts();
+
+  await renderAdminProducts();
+
+  alert(
+    "Product saved successfully."
+  );
+
+}
+
+
+/* =========================
+   DELETE PRODUCT
+========================= */
+
+async function deleteProduct(productId){
+
+  if(
+    !confirm(
+      "Delete this product?"
+    )
+  ){
+
+    return;
+
+  }
+
+  const {
+    error
+  } =
+    await supabaseClient
+      .from("products")
+      .delete()
+      .eq("id",Number(productId));
+
+  if(error){
+
+    console.error(error);
+
+    alert(
+      "Product could not be deleted."
+    );
+
+    return;
+
+  }
+
+  products =
+    products.filter(
+      product =>
+        Number(product.id) !==
+        Number(productId)
+    );
+
+  cart =
+    cart.filter(
+      item =>
+        Number(item.id) !==
+        Number(productId)
+    );
+
+  saveCart();
+
+  updateCartCount();
+
+  render();
+
+  await renderAdminProducts();
+
+}
+
+
+/* =========================
+   ADMIN ORDERS
+========================= */
+
+async function renderAdminOrders(){
+
+  if(!adminUnlocked){
+    return;
+  }
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("orders")
+      .select("*")
+      .order(
+        "created_at",
+        {
+          ascending:false
+        }
+      );
+
+  if(error){
+
+    console.error(error);
+
+    alert(
+      "Orders could not be loaded."
+    );
+
+    return;
+
+  }
+
+  const orders =
+    data || [];
+
+  const content =
+    document.getElementById(
+      "adminContent"
+    );
+
+  content.innerHTML = `
+
+    <div class="admin-header">
+
+      <h2>
+        Customer Orders
+      </h2>
+
+      <div class="small">
+        Orders stored in Supabase
+      </div>
+
+    </div>
+
+    ${adminNavigation()}
+
+    ${
+      orders.length
+        ? orders.map(order => `
+
+          <div class="admincard">
+
+            <b>
+              ${escapeHTML(order.id)}
+            </b>
+
+            <div class="muted">
+              ${escapeHTML(
+                order.date || ""
+              )}
+            </div>
+
+            <p>
+
+              <b>Customer:</b>
+              ${escapeHTML(
+                order.name
+              )}
+
+              <br>
+
+              <b>Phone:</b>
+              ${escapeHTML(
+                order.phone
+              )}
+
+              <br>
+
+              <b>Location:</b>
+              ${escapeHTML(
+                order.location
+              )}
+
+            </p>
+
+            <p>
+
+              <b>Address:</b>
+              <br>
+
+              ${escapeHTML(
+                order.address
+              )}
+
+            </p>
+
+            <p>
+
+              <b>Items:</b>
+              <br>
+
+              ${
+                (
+                  Array.isArray(order.items)
+                    ? order.items
+                    : []
+                )
+                .map(item => {
+
+                  const product =
+                    products.find(
+                      p =>
+                        Number(p.id) ===
+                        Number(item.id)
+                    );
+
+                  return `
+                    ${Number(item.n) || 0}
+                    ×
+                    ${escapeHTML(
+                      product?.name ||
+                      "Deleted product"
+                    )}
+                    <br>
+                  `;
+
+                })
+                .join("")
+              }
+
+            </p>
+
+            ${
+              order.note
+                ? `
+                  <p>
+                    <b>Note:</b>
+                    ${escapeHTML(
+                      order.note
+                    )}
+                  </p>
+                `
+                : ""
+            }
+
+            <div class="field">
+
+              <label>
+                Order Status
+              </label>
+
+              <select
+                data-order-status="${escapeHTML(order.id)}"
+              >
+
+                <option
+                  value="New"
+                  ${
+                    order.status === "New"
+                      ? "selected"
+                      : ""
+                  }
+                >
+                  New
+                </option>
+
+                <option
+                  value="Confirmed"
+                  ${
+                    order.status === "Confirmed"
+                      ? "selected"
+                      : ""
+                  }
+                >
+                  Confirmed
+                </option>
+
+                <option
+                  value="Delivered"
+                  ${
+                    order.status === "Delivered"
+                      ? "selected"
+                      : ""
+                  }
+                >
+                  Delivered
+                </option>
+
+                <option
+                  value="Cancelled"
+                  ${
+                    order.status === "Cancelled"
+                      ? "selected"
+                      : ""
+                  }
+                >
+                  Cancelled
+                </option>
+
+              </select>
+
+            </div>
+
+            <button
+              type="button"
+              class="tab"
+              data-order-whatsapp="${escapeHTML(order.id)}"
+            >
+              WhatsApp Customer
+            </button>
+
+          </div>
+
+        `).join("")
+        : `
+          <div class="empty">
+            No orders yet.
+          </div>
+        `
+    }
+
+  `;
+
+}
+
+
+/* =========================
+   ORDER STATUS
+========================= */
+
+async function updateOrderStatus(
+  orderId,
+  status
+){
+
+  const {
+    error
+  } =
+    await supabaseClient
+      .from("orders")
+      .update({
+        status
+      })
+      .eq(
+        "id",
+        orderId
+      );
+
+  if(error){
+
+    console.error(error);
+
+    alert(
+      "Order status could not be updated."
+    );
+
+    return;
+
+  }
+
+}
+
+
+/* =========================
+   ADMIN SETTINGS
+========================= */
+
+function renderAdminSettings(){
+
+  if(!adminUnlocked){
+    return;
+  }
+
+  const content =
+    document.getElementById(
+      "adminContent"
+    );
+
+  content.innerHTML = `
+
+    <div class="admin-header">
+
+      <h2>
+        Admin Settings
+      </h2>
+
+      <div class="small">
+        Admin passcode is stored in Supabase
+      </div>
+
+    </div>
+
+    ${adminNavigation()}
+
+    <div class="notice">
+
+      Products, customer orders and the
+      admin passcode are stored in Supabase.
+
+      The shopping cart remains on the customer's device.
+
+    </div>
+
+    <form id="changePinForm">
+
+      <div class="field">
+
+        <label for="newPin">
+          New Admin Passcode
+        </label>
+
+        <input
+          id="newPin"
+          type="password"
+          minlength="4"
+        >
+
+      </div>
+
+      <button
+        type="submit"
+        class="success"
+      >
+        Save Passcode
+      </button>
+
+    </form>
+
+  `;
+
+}
+
+
+/* =========================
+   ADMIN EVENT HANDLING
+========================= */
+
+async function handleAdminClick(event){
+
+  const tab =
+    event.target.closest(
+      "[data-admin-tab]"
+    );
+
+  if(tab){
+
+    const value =
+      tab.dataset.adminTab;
+
+    if(value === "products"){
+
+      await renderAdminProducts();
+
+    }
+
+    if(value === "orders"){
+
+      await renderAdminOrders();
+
+    }
+
+    if(value === "settings"){
+
+      renderAdminSettings();
+
+    }
+
+    return;
+
+  }
+
+  const editButton =
+    event.target.closest(
+      "[data-edit-product]"
+    );
+
+  if(editButton){
+
+    const product =
+      products.find(
+        item =>
+          Number(item.id) ===
+          Number(
+            editButton.dataset.editProduct
+          )
+      );
+
+    if(product){
+
+      renderProductForm(product);
+
+    }
+
+    return;
+
+  }
+
+  const deleteButton =
+    event.target.closest(
+      "[data-delete-product]"
+    );
+
+  if(deleteButton){
+
+    await deleteProduct(
+      deleteButton.dataset.deleteProduct
+    );
+
+    return;
+
+  }
+
+  const action =
+    event.target.closest(
+      "[data-admin-action]"
+    );
+
+  if(action){
+
+    if(
+      action.dataset.adminAction ===
+      "new-product"
+    ){
+
+      renderProductForm(null);
+
+    }
+
+    if(
+      action.dataset.adminAction ===
+      "products"
+    ){
+
+      await renderAdminProducts();
+
+    }
+
+  }
+
+}
+
+
+/* =========================
+   CHANGE ADMIN PIN
+========================= */
+
+async function changeAdminPin(){
+
+  const pin =
+    document
+      .getElementById("newPin")
+      .value;
+
+  if(pin.length < 4){
+
+    alert(
+      "Use at least 4 characters."
+    );
+
+    return;
+
+  }
+
+  const saved =
+    await saveAdminPin(pin);
+
+  if(!saved){
+
+    alert(
+      "Admin passcode could not be saved."
+    );
+
+    return;
+
+  }
+
+  alert(
+    "Admin passcode changed successfully."
+  );
+
+  renderAdminSettings();
+
+}
+
+
+/* =========================
+   GENERAL EVENT HANDLING
+========================= */
+
+document.addEventListener(
+  "click",
+  async event => {
+
+    /* PAGE BUTTONS */
+
+    const pageButton =
+      event.target.closest(
+        "[data-page]"
+      );
+
+    if(pageButton){
+
+      showPage(
+        pageButton.dataset.page
+      );
+
+      return;
+
+    }
+
+
+    /* CATEGORIES */
+
+    if(
+      event.target.closest(
+        "[data-category]"
+      )
+    ){
+
+      handleCategoryClick(event);
+
+      return;
+
+    }
+
+
+    /* PRODUCT CARD */
+
+    const productCardElement =
+      event.target.closest(
+        "[data-product-id]"
+      );
+
+    if(
+      productCardElement &&
+      !event.target.closest("button")
+    ){
+
+      openProduct(
+        productCardElement.dataset.productId
+      );
+
+      return;
+
+    }
+
+
+    /* CART */
+
+    if(
+      event.target.closest(
+        "#cartButton"
+      )
+    ){
+
+      renderCart();
+
+      openModal("cartDrawer");
+
+      return;
+
+    }
+
+
+    /* CLOSE */
+
+    const closeElement =
+      event.target.closest(
+        "[data-close]"
+      );
+
+    if(closeElement){
+
+      closeModal(
+        closeElement.dataset.close
+      );
+
+      return;
+
+    }
+
+
+    /* SHOP CATALOG */
+
+    if(
+      event.target.closest(
+        "#shopCatalogButton"
+      )
+    ){
+
+      showPage("products");
+
+      return;
+
+    }
+
+
+    /* ADD CART */
+
+    const addButton =
+      event.target.closest(
+        "[data-action='add-cart']"
+      );
+
+    if(addButton){
+
+      addToCart(
+        addButton.dataset.id
+      );
+
+      closeModal("productModal");
+
+      return;
+
+    }
+
+
+    /* ORDER NOW */
+
+    const orderButton =
+      event.target.closest(
+        "[data-action='order-now']"
+      );
+
+    if(orderButton){
+
+      addToCart(
+        orderButton.dataset.id
+      );
+
+      closeModal("productModal");
+
+      showPage("order");
+
+      return;
+
+    }
+
+
+    /* PRODUCT WHATSAPP */
+
+    const productWhatsApp =
+      event.target.closest(
+        "[data-action='product-whatsapp']"
+      );
+
+    if(productWhatsApp){
+
+      openWhatsApp(
+        "Hello BASTEE, I am interested in " +
+        productWhatsApp.dataset.name +
+        "."
+      );
+
+      return;
+
+    }
+
+
+    /* CART PLUS */
+
+    const plus =
+      event.target.closest(
+        "[data-cart-plus]"
+      );
+
+    if(plus){
+
+      changeQuantity(
+        plus.dataset.cartPlus,
+        1
+      );
+
+      return;
+
+    }
+
+
+    /* CART MINUS */
+
+    const minus =
+      event.target.closest(
+        "[data-cart-minus]"
+      );
+
+    if(minus){
+
+      changeQuantity(
+        minus.dataset.cartMinus,
+        -1
+      );
+
+      return;
+
+    }
+
+
+    /* CART REMOVE */
+
+    const remove =
+      event.target.closest(
+        "[data-cart-remove]"
+      );
+
+    if(remove){
+
+      removeFromCart(
+        remove.dataset.cartRemove
+      );
+
+      return;
+
+    }
+
+
+    /* CONTINUE ORDER */
+
+    if(
+      event.target.closest(
+        "#continueOrderButton"
+      )
+    ){
+
+      if(!cart.length){
+
+        alert(
+          "Add a product first."
+        );
+
+        return;
+
+      }
+
+      closeModal("cartDrawer");
+
+      showPage("order");
+
+      return;
+
+    }
+
+
+    /* WHATSAPP */
+
+    if(
+      event.target.closest(
+        "#whatsappChatButton"
+      ) ||
+      event.target.closest(
+        "#floatingWhatsApp"
+      )
+    ){
+
+      openWhatsApp();
+
+      return;
+
+    }
+
+
+    /* ADMIN */
+
+    if(
+      event.target.closest(
+        "#adminButton"
+      )
+    ){
+
+      document.getElementById(
+        "adminPin"
+      ).value = "";
+
+      openModal("adminLogin");
+
+      setTimeout(
+        () => {
+
+          document
+            .getElementById("adminPin")
+            ?.focus();
+
+        },
+        50
+      );
+
+      return;
+
+    }
+
+
+    /* ADMIN DASHBOARD */
+
+    if(
+      event.target.closest(
+        "#closeAdminButton"
+      )
+    ){
+
+      adminUnlocked = false;
+
+      closeModal("adminModal");
+
+      return;
+
+    }
+
+
+    /* ADMIN CONTENT */
+
+    if(
+      event.target.closest(
+        "#adminContent"
+      )
+    ){
+
+      await handleAdminClick(event);
+
+      const status =
+        event.target.closest(
+          "[data-order-status]"
+        );
+
+      if(status){
+
+        await updateOrderStatus(
+          status.dataset.orderStatus,
+          status.value
+        );
+
+      }
+
+      const orderWhatsApp =
+        event.target.closest(
+          "[data-order-whatsapp]"
+        );
+
+      if(orderWhatsApp){
+
+        openWhatsApp(
+          "Hello, this is BASTEE regarding order " +
+          orderWhatsApp.dataset.orderWhatsapp +
+          "."
+        );
+
+      }
+
+    }
+
+  }
+);
+
+
+/* =========================
+   SEARCH
+========================= */
+
+document
+  .getElementById("searchForm")
+  .addEventListener(
+    "submit",
+    event => {
+
+      event.preventDefault();
+
+      showPage("products");
+
+      render();
+
+    }
+  );
+
+
+document
+  .getElementById("search")
+  .addEventListener(
+    "input",
+    render
+  );
+
+
+/* =========================
+   ORDER FORM
+========================= */
+
+document
+  .getElementById(
+    "submitOrderButton"
+  )
+  .addEventListener(
+    "click",
+    submitOrder
+  );
+
+
+/* =========================
+   CHAT FORM
+========================= */
+
+document
+  .getElementById("chatForm")
+  .addEventListener(
+    "submit",
+    event => {
+
+      event.preventDefault();
+
+      const input =
+        document.getElementById(
+          "chatInput"
+        );
+
+      const message =
+        input.value.trim();
+
+      if(!message){
+        return;
+      }
+
+      const messages =
+        document.getElementById(
+          "messages"
+        );
+
+      messages.insertAdjacentHTML(
+        "beforeend",
+        `
+          <div class="msg customer">
+            ${escapeHTML(message)}
+          </div>
+
+          <div class="msg support">
+            Opening WhatsApp...
+          </div>
+        `
+      );
+
+      input.value = "";
+
+      messages.scrollTop =
+        messages.scrollHeight;
+
+      openWhatsApp(message);
+
+    }
+  );
+
+
+/* =========================
+   ADMIN LOGIN FORM
+========================= */
+
+document
+  .getElementById(
+    "adminLoginForm"
+  )
+  .addEventListener(
+    "submit",
+    event => {
+
+      event.preventDefault();
+
+      loginAdmin();
+
+    }
+  );
+
+
+/* =========================
+   ADMIN CONTENT FORMS
+========================= */
+
+document.addEventListener(
+  "submit",
+  async event => {
+
+    if(
+      event.target.id ===
+      "changePinForm"
+    ){
+
+      event.preventDefault();
+
+      await changeAdminPin();
+
+      return;
+
+    }
+
+  }
+);
+
+
+/* =========================
+   ADMIN SAVE PRODUCT
+========================= */
+
+document.addEventListener(
+  "click",
+  async event => {
+
+    const saveButton =
+      event.target.closest(
+        "#saveProductButton"
+      );
+
+    if(!saveButton){
+      return;
+    }
+
+    const productId =
+      saveButton.dataset.productSaveId;
+
+    await saveProduct(
+      productId || null
+    );
+
+  }
+);
+
+
+/* =========================
+   INITIALIZE
+========================= */
+
+async function initialize(){
+
+  cart = loadCart();
+
+  updateCartCount();
+
+  renderCategories();
+
+  render();
+
+  await loadProducts();
+
+  renderCart();
+
+  renderOrder();
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+initialize();
+
+</script>
+
+</body>
+</html>
